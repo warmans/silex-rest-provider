@@ -1,0 +1,23 @@
+{
+    "name": "warmans/silex-rest-provider",
+    "type": "library",
+    "description": "Basic library for generating REST resources in Silex using extremely terse configuration. Based somewhat on mach/silex-rest.",
+    "authors": [
+        {
+            "name": "Stefan Warman",
+            "email": "stefan.warman@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "silex/silex": "~1.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*",
+        "squizlabs/php_codesniffer": "1.*"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {"SilexProvider\\Rest\\": "src/"}
+    }
+}
