@@ -27,8 +27,7 @@ With mach's rest provider you define your api as follows:
     $r1 = $app['rest']->resource('foo', 'some.controller'); // /foo
     $r2 = $r1->subresource('bar', 'some.controller.2');     // /foo/0/bar
     $r3 = $r2->subresource('baz', 'some.controller.3');     // /foo/0/bar/0/baz
-$r4 = $r2->subresource('baz-alt', 'some.controller.4'); // /foo/0/bar/0/baz-alt
-
+    $r4 = $r2->subresource('baz-alt', 'some.controller.4'); // /foo/0/bar/0/baz-alt
 
 This is fine if you have a small set of resources but as an API grows you end up with a bit of a mess.
 Deleting resources can also cause problems as you have to find the factory, and untangle the dependent
@@ -74,6 +73,8 @@ generate the controller used to handle requests to this segment.
 
 The controller class must implement public methods for the HTTP verbs you want to implement.
 
+| Request               | Invokes
+| --------------------- | ---------
 | GET /api/v1/foo       | cget()
 | POST /api/v1/foo      | post()
 | GET /api/v1/foo/1     | get($id)
