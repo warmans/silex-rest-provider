@@ -1,6 +1,9 @@
 Yet Another Silex Rest Provider
 =======================================
 
+[![Build Status](https://travis-ci.org/warmans/silex-rest-provider.svg)](https://travis-ci.org/warmans/silex-rest-provider)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/warmans/silex-rest-provider/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/warmans/silex-rest-provider/?branch=master)
+
 Provider to simplify/standardize the generation of REST API resources in Silex based somewhat on mach/silex-rest.
 
 ### The Problem
