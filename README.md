@@ -59,6 +59,12 @@ The same api is defined as follows:
 
 Internally this will register all the controllers and then setup routes for the HTTP verbs.
 
+### Installation
+
+Install with composer than register the provider in your application
+
+    $app->register(new \SilexProvier\Rest\Provider\RestServiceProvider($app));
+
 ### Resources
 
 At minimum a resource must have the following elements:
