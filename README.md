@@ -108,9 +108,9 @@ For each additional sub resource in a hierarchy an additional id property is pas
 action. These are named id, idd, iddd, idddd and so on for as many sub resources as exist.
 
 With the above example a call to `GET /api/v1/foo/1/bar/2` will call the equivalent of `\Some\Controller::get(1, 2)`
-so \Some\Controller should define it's get method as `get($id, $idd)`.
+so `\Some\Controller` should define its get method as `get($id, $idd)`.
 
-Similarly a call to `GET /api/v1/foo/1/bar will invoke `\Some\Controller::cget(1)`.
+Similarly a call to `GET /api/v1/foo/1/bar` will invoke `\Some\Controller::cget(1)`.
 
 
 ### Additional information on Controllers
@@ -120,9 +120,9 @@ existing service e.g.
 
     'ctl' => 'my.registered.controller'
 
-If you want access to a controller that WAS defined inline it name will be prefixed with `rest.ctl`
-then use the full hierarchy of resources in a dot-separated string. Foe example for teh sub resource
-defined above the defined controllers would be:
+If you want access to a controller that WAS defined inline its name will be prefixed with `rest.ctl`
+then use the full hierarchy of resources in a dot-separated string. For example the config defined in
+the sub resources section above would register:
 
 1. rest.ctl.api.v1.foo
 2. rest.ctl.api.v1.foo.bar
