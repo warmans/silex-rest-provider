@@ -129,12 +129,14 @@ class RestService
      *
      * @param $uri
      * @param array $parentUris
-     * @param bool $getUri
+     * @param bool $includeResourceId
      * @return string
      */
-    public function createRouteUri($uri, $parentUris=array(), $getUri=false)
+    public function createRouteUri($uri, $parentUris=array(), $includeResourceId=false)
     {
         $id = 'id';
+
+        //parents
         $fullUri = [];
         foreach ($parentUris as $part) {
             $fullUri[] = trim($part, '\\/');
@@ -142,6 +144,14 @@ class RestService
             $id .= 'd';
         }
 
-        return '/'.(count($fullUri) ? implode('/', $fullUri).'/' : '').trim($uri, '\\/').($getUri ? '/{'.$id.'}' : '');
+        //new resource
+        $fullUri[] = trim($uri, '\\/');
+
+        //optionally include final id for this resource
+        if ($includeResourceId) {
+            $fullUri[] = '{'.$id.'}';
+        }
+
+        return '/'.implode('/', $fullUri);
     }
 }

@@ -22,6 +22,14 @@ class RestServiceTest extends \PHPUnit_Framework_TestCase
         $this->object = new RestService($this->app);
     }
 
+    private function createApplication()
+    {
+        $app = new Application(array('debug'=>true));
+        $app->register(new ServiceControllerServiceProvider());
+        $app->register(new Provider\RestServiceProvider($app));
+        return $app;
+    }
+
     /**
      * @expectedException \RuntimeException
      */
@@ -40,7 +48,6 @@ class RestServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateResourceGeneratesRoutes()
     {
-        $this->app = $this->createApplication();
         $this->app['rest']->createResource([
             'uri' => '/user',
             'ctl' => function () { return new \SampleController(); }
@@ -55,7 +62,6 @@ class RestServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateSubResourceGeneratesRoutes()
     {
-        $this->app = $this->createApplication();
         $this->app['rest']->createResource([
             'uri' => '/api/user',
             'ctl' => function () { return new \SampleController(1); },
@@ -74,6 +80,65 @@ class RestServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('3post1-2', $this->app->handle(Request::create('/api/user/1/event/2/subscription', 'POST'))->getContent());
         $this->assertEquals('3put-1-2-3', $this->app->handle(Request::create('/api/user/1/event/2/subscription/3', 'PUT'))->getContent());
         $this->assertEquals('3patch-1-2-3', $this->app->handle(Request::create('/api/user/1/event/2/subscription/3', 'PATCH'))->getContent());
+    }
+
+    public function testCreateResourceFromExistingControllerGeneratesRoutes()
+    {
+        $this->app['my.controller'] = function () {
+            return new \SampleController();
+        };
+
+        $this->app['rest']->createResource([
+            'uri' => '/user',
+            'ctl' => 'my.controller'
+        ]);
+
+        $this->assertEquals('cget', $this->app->handle(Request::create('/user'))->getContent());
+        $this->assertEquals('get-foo', $this->app->handle(Request::create('/user/foo'))->getContent());
+        $this->assertEquals('post', $this->app->handle(Request::create('/user', 'POST'))->getContent());
+        $this->assertEquals('put-foo', $this->app->handle(Request::create('/user/foo', 'PUT'))->getContent());
+        $this->assertEquals('patch-foo', $this->app->handle(Request::create('/user/foo', 'PATCH'))->getContent());
+    }
+
+    public function testImportApiGeneratesRoutes()
+    {
+        $this->app['rest']->importApi([[
+            'uri' => '/user',
+            'ctl' => function () { return new \SampleController(); }
+        ]]);
+
+        $this->assertEquals('cget', $this->app->handle(Request::create('/user'))->getContent());
+        $this->assertEquals('get-foo', $this->app->handle(Request::create('/user/foo'))->getContent());
+        $this->assertEquals('post', $this->app->handle(Request::create('/user', 'POST'))->getContent());
+        $this->assertEquals('put-foo', $this->app->handle(Request::create('/user/foo', 'PUT'))->getContent());
+        $this->assertEquals('patch-foo', $this->app->handle(Request::create('/user/foo', 'PATCH'))->getContent());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testInvalidSubResource()
+    {
+        $this->app['rest']->createResource([
+            'uri' => '/api/user',
+            'ctl' => function () { return new \SampleController(1); },
+            'sub' => [[
+                'uri' => '/event',
+                'ctl' => function () { return new \SampleController(2); },
+                'sub' => 'invalid'
+            ]]
+        ]);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testInvalidController()
+    {
+        $this->app['rest']->createResource([
+            'uri' => '/api/user',
+            'ctl' => new \stdClass()
+        ]);
     }
 
     public function testRegisterControllerInvokesPimple()
@@ -97,7 +162,7 @@ class RestServiceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testCreateRouteUri()
+    public function testCreateSimpleRouteUri()
     {
         $this->assertEquals('/user', $this->object->createRouteUri('/user'));
     }
@@ -124,13 +189,5 @@ class RestServiceTest extends \PHPUnit_Framework_TestCase
             '/foo/{id}/bar/{idd}/user/{iddd}',
             $this->object->createRouteUri('/user', array('/foo', '/bar'), true)
         );
-    }
-
-    private function createApplication()
-    {
-        $app = new Application(array('debug'=>true));
-        $app->register(new ServiceControllerServiceProvider());
-        $app->register(new Provider\RestServiceProvider($app));
-        return $app;
     }
 }
