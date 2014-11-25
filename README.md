@@ -7,6 +7,11 @@ Yet Another Silex Rest Provider
 
 Provider to simplify/standardize the generation of REST API resources in Silex based somewhat on mach/silex-rest.
 
+### Important Note on Versions
+
+Versions below 2.0.0 support Silex 1.x while versions above and including 2.0.0 support silex 2.0@dev. The 2.0.0 versions WILL NOT work with silex 1.2.
+
+
 ### The Problem
 
 With mach's rest provider you define your api as follows:
